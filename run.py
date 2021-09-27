@@ -1,5 +1,6 @@
 import gspread
 from google.oauth2.service_account import Credentials
+from pprint import pprint
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -17,16 +18,15 @@ SHEET = GSPREAD_CLIENT.open('MunsterTv-Suppliers')
 #print(data)
 
 
-
 # Requesting data from the user
 # Function to collect purchase data from user
 def get_purchases_data():
     """
-    Get purchase figures input form the user
+    Get purchase figures input from the user
     """
 # Repeat request for data to loop until correct input
     while True:
-        print("Please enter purchases data from previous month.")
+        print("Please enter purchases data.")
         print("Data covers 6 cells and to be seperated by commas.")
         print("Example: Date,Product,Quantity,Net Price,Tax and Supplier.\n")
 
@@ -68,7 +68,7 @@ def validate_data(values):
     #print(values) 
        
 
-# Insert new entry to google sheets
+# Insert new entry to google purchases sheet 
 def update_purchases_worksheet(data):
     """
     Update purchases worksheet, add new row with the list provided
@@ -76,12 +76,42 @@ def update_purchases_worksheet(data):
     print("Updating purchases worksheet...\n")
     purchases_worksheet = SHEET.worksheet('purchases')
     purchases_worksheet.append_row(data)
-    print("Purcchases worksheet updated successfully.\n")
+    print("Purchases worksheet updated successfully.\n")
 
 
 
- # Call def get_purchases_data function  
-data = get_purchases_data() 
-purchases_data = [str(int) for int in data]
-# Call function def update_purchases_worksheet
-update_purchases_worksheet(purchases_data)
+# Get each suppliers name from supplier sheet
+def calculate_suppliers_data(supplier_col):
+    """
+    Calculate how many suppliers
+    """
+    print("Calculating each suppliers name..\n")
+    suppliers = SHEET.worksheet("suppliers").get_all_values()
+    pprint(suppliers)
+
+    # Insert new entry to google suppliers sheet 
+def update_suppliers_worksheet(data):
+    """
+    Update suppliers worksheet, add new row with the list provided
+    """
+    print("Updating suppliers worksheet...\n")
+    suppliers_worksheet = SHEET.worksheet('suppliers')
+    suppliers_worksheet.append_row(data)
+    print("Suppliers worksheet updated successfully.\n")
+
+
+# Put function calls into main()
+def main():
+    """
+    Run all program functions
+    """
+    # Call def get_purchases_data function  
+    data = get_purchases_data() 
+    purchases_data = [str(int) for int in data]
+    # Call function def update_purchases_worksheet
+    update_purchases_worksheet(purchases_data)
+    calculate_suppliers_data(purchases_data)
+    update_suppliers_worksheet(suppliers_data)
+
+print("Welcome to Munster TV data automation")    
+main()    
