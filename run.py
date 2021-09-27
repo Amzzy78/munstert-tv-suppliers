@@ -54,7 +54,7 @@ def validate_data(values):
     or if there arent exactly 6 cell values.
     """
     try:
-        #[int(value) for value in values]  #only use if all numbers
+        [str(value) for value in values]  
         if len(values) != 6:
             raise ValueError(
                 f"Exactly 6 cells with values required, you provided {len(values)}"
@@ -65,9 +65,23 @@ def validate_data(values):
 
     return True         
 
-    #print(values)    
+    #print(values) 
+       
+
+# Insert new entry to google sheets
+def update_purchases_worksheet(data):
+    """
+    Update purchases worksheet, add new row with the list provided
+    """
+    print("Updating purchases worksheet...\n")
+    purchases_worksheet = SHEET.worksheet('purchases')
+    purchases_worksheet.append_row(data)
+    print("Purcchases worksheet updated successfully.\n")
+
 
 
  # Call def get_purchases_data function  
 data = get_purchases_data() 
-
+purchases_data = [str(int) for int in data]
+# Call function def update_purchases_worksheet
+update_purchases_worksheet(purchases_data)
